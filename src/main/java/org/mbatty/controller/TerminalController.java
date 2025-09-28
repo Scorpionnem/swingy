@@ -20,8 +20,25 @@ public class TerminalController extends Controller {
         this.view = view;
     }
 
+    public boolean processFightInput() {
+        view.renderInfo("An enemy wants to fight you! What will you do");
+        List<String> valid = List.of("fight", "run", "quit");
+        String input = readInput(valid);
+
+        switch (input)
+        {
+            case "fight":
+                return (true);
+            case "run":
+                return (false);
+            default:
+                view.renderInfo("Unknown instruction");
+        }
+        return (false);
+    }
+
     public void processStartInput() {
-        System.out.println("Lets start, what do you want to do?");
+        view.renderInfo("Lets start, what do you want to do?");
         List<String> valid = List.of("create", "load", "quit");
         String input = readInput(valid);
 
@@ -33,7 +50,7 @@ public class TerminalController extends Controller {
             case "load":
                 break ;
             default:
-                System.out.println("Unknown instruction.");
+                view.renderInfo("Unknown instruction");
         }
     }
 
@@ -45,7 +62,7 @@ public class TerminalController extends Controller {
     }
 
     public void    processInput() {
-        System.out.println("What do you want to do now?");
+        view.renderInfo("What do you want to do now?");
         List<String> valid = List.of("north", "south", "west", "east", "quit");
         String input = readInput(valid);
 
@@ -64,17 +81,16 @@ public class TerminalController extends Controller {
                 handleMove(1, 0);
                 break ;
             default:
-                System.out.println("Unknown instruction.");
+                view.renderInfo("Unknown instruction");
         }
     }
 
     private String  readInput(List<String> validArgs) {
         while (true) {
-            System.out.println("Available input: " + validArgs);
+            view.renderInfo("Available input: " + validArgs);
             System.out.print(":> ");
             String  input = scanner.nextLine();
             if (input.equals("quit")) {
-                System.out.println("Closing program.");
                 exit(1);
             }
             else if (validArgs.contains(input))
@@ -84,13 +100,12 @@ public class TerminalController extends Controller {
         }
     }
     private String  readInputNoUnknown(List<String> validArgs) {
-        System.out.println("Available input: " + validArgs);
+        view.renderInfo("Available input: " + validArgs);
         System.out.print(":> ");
 
         String input = scanner.nextLine();
 
         if (input.equals("quit")) {
-            System.out.println("Closing program.");
             exit(1);
         }
 

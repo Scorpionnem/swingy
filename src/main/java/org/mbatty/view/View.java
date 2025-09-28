@@ -14,6 +14,7 @@ import org.mbatty.model.entities.Entity;
 abstract public class View {
     protected Model model;
 
+    abstract public void    renderInfo(String str);
     abstract public void    renderMap(Map map);
     abstract public void    renderPlayerStats(Entity player);
 }

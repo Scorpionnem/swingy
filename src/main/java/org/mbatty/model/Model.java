@@ -7,11 +7,24 @@ package org.mbatty.model;
 */
 
 import org.mbatty.model.entities.Entity;
+import org.mbatty.model.entities.Goblin;
 
 import static java.lang.System.exit;
 
 public class Model {
     private final GameState   gameState = new GameState();
+
+    private void    spreadEntities() {
+        Map map = gameState.getMap();
+        int size = map.getSize();
+
+        for (int y = 0; y < size; y++) {
+            for (int x = 0; x < size; x++) {
+                if (Math.random() > 0.5 && x != size / 2 && y != size / 2)
+                    map.setEntity(new Goblin("enemy"), x, y);
+            }
+        }
+    }
 
     public void    startNewLevel() {
         Entity  player = gameState.getPlayer();
@@ -25,6 +38,7 @@ public class Model {
         gameState.setMap(new Map(mapSize));
 
         gameState.getMap().setEntity(player, player.getPosX(), player.getPosY());
+        spreadEntities();
     }
 
     public void startFight(Entity e1, Entity e2) {
@@ -44,6 +58,11 @@ public class Model {
                 e2.attack(e1);
                 e1.attack(e2);
             }
+        }
+
+        if (e1.alive())
+        {
+            e1.addExperience(e2.getAttack() * 100);
         }
     }
 

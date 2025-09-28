@@ -14,7 +14,7 @@ public class Main {
 
         Model   model = new Model();
         View view = new TerminalView();
-        Controller controller = new TerminalController(model, null);
+        Controller controller = new TerminalController(model, view);
 
         controller.startGame();
 

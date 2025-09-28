@@ -18,6 +18,7 @@ abstract public class Controller {
 
     abstract public void processInput();
     abstract public void processStartInput();
+    abstract public boolean processFightInput();
 
     public void startGame() {
         processStartInput();
@@ -28,10 +29,15 @@ abstract public class Controller {
         Entity player = model.getGameState().getPlayer();
         Map map = model.getGameState().getMap();
 
-
         Entity tile = map.getTile(player.getPosX() + dx, player.getPosY() + dy);
-        if (tile != null)
-            model.startFight(player, tile);
+        if (tile != null) {
+            Boolean wantsToFight = processFightInput();
+            if (wantsToFight || (!wantsToFight && Math.random() > 0.5)) {
+                model.startFight(player, tile);
+            }
+            else
+                return ;
+        }
         if (player.alive())
             model.moveTo(player, dx, dy);
         else

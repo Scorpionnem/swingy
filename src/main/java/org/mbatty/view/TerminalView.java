@@ -9,10 +9,12 @@ public class TerminalView extends View {
         for (int y = 0; y < map.getSize(); y++) {
             for (int x = 0; x < map.getSize(); x++) {
                 Entity entity = map.getTile(x, y);
-                if (entity != null)
-                    System.out.print("E");
+                if (entity != null && entity.getName().equals("enemy"))
+                    System.out.print("\uD83E\uDDCC");
+                else if (entity != null)
+                    System.out.print("\uD83E\uDD34\uD83C\uDFFB");
                 else
-                    System.out.print(".");
+                    System.out.print("  ");
             }
             System.out.println();
         }
@@ -26,4 +28,7 @@ public class TerminalView extends View {
         System.out.println(player.getDefense() + " Defense");
     }
 
+    public void    renderInfo(String str) {
+        System.out.println(str);
+    }
 }
