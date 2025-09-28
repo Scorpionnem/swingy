@@ -7,10 +7,13 @@ package org.mbatty.view;
 */
 
 import org.mbatty.model.GameState;
+import org.mbatty.model.Map;
 import org.mbatty.model.Model;
+import org.mbatty.model.entities.Entity;
 
 abstract public class View {
     protected Model model;
 
-    abstract public void    render(GameState state);
+    abstract public void    renderMap(Map map);
+    abstract public void    renderPlayerStats(Entity player);
 }

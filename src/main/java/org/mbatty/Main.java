@@ -16,13 +16,13 @@ public class Main {
         View view = new TerminalView();
         Controller controller = new TerminalController(model, null);
 
-        controller.processStartGame();
-        view.render(model.getGameState());
+        controller.startGame();
 
         while (true) {
             controller.processInput();
 
-            view.render(model.getGameState());
+            view.renderMap(model.getGameState().getMap());
+            view.renderPlayerStats(model.getGameState().getPlayer());
         }
     }
 }

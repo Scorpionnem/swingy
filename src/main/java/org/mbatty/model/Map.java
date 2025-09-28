@@ -1,7 +1,10 @@
 package org.mbatty.model;
 
+import org.mbatty.model.entities.Entity;
+import org.mbatty.model.entities.Goblin;
+
 public class Map {
-    private Entity [][]map;
+    private final Entity[][]map;
     int size;
 
     public Map(int size) {
@@ -10,21 +13,30 @@ public class Map {
 
         for (int y = 0; y < size; y++) {
             for (int x = 0; x < size; x++) {
-                if (Math.random() < 0.5 && x != size / 2 && y != size / 2)
-                    map[y][x] = new Goblin("enemy");
-                else
                     map[y][x] = null;
             }
         }
     }
 
-    public Entity[][] getMap() {
+    public Entity   [][]getMap() {
         return map;
     }
-    public int getSize() {
+
+    public Entity   getTile(int x, int y) {
+        if (x < 0 || x >= size || y < 0 || y >= size)
+            return (null);
+        return (map[y][x]);
+    }
+
+    public Boolean onEdge(int x, int y) {
+        return (x == 0 || y == 0 || x == size - 1 || y == size - 1);
+    }
+
+    public int  getSize() {
         return size;
     }
-    public void setTile(Entity val, int x, int y) {
-        map[y][x] = val;
+
+    public void setEntity(Entity entity, int x, int y) {
+        map[y][x] = entity;
     }
 }

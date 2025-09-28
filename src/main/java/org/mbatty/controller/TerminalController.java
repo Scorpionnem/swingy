@@ -2,6 +2,7 @@ package org.mbatty.controller;
 
 import org.mbatty.model.GameState;
 import org.mbatty.model.Model;
+import org.mbatty.model.entities.Knight;
 import org.mbatty.view.TerminalView;
 import org.mbatty.view.View;
 
@@ -13,12 +14,58 @@ import java.util.Scanner;
 import static java.lang.System.exit;
 
 public class TerminalController extends Controller {
-    private Model model;
-    private View view;
     private Scanner scanner = new Scanner(System.in);
     public TerminalController(Model model, View view) {
         this.model = model;
         this.view = view;
+    }
+
+    public void processStartInput() {
+        System.out.println("Lets start, what do you want to do?");
+        List<String> valid = List.of("create", "load", "quit");
+        String input = readInput(valid);
+
+        switch (input)
+        {
+            case "create":
+                createCharacter();
+                break ;
+            case "load":
+                break ;
+            default:
+                System.out.println("Unknown instruction.");
+        }
+    }
+
+    private void    createCharacter() {
+        List<String> valid = List.of("any_name", "quit");
+        String name = readInputNoUnknown(valid);
+
+        model.getGameState().setPlayer(new Knight(name));
+    }
+
+    public void    processInput() {
+        System.out.println("What do you want to do now?");
+        List<String> valid = List.of("north", "south", "west", "east", "quit");
+        String input = readInput(valid);
+
+        switch (input)
+        {
+            case "north":
+                handleMove(0, -1);
+                break ;
+            case "south":
+                handleMove(0, 1);
+                break ;
+            case "west":
+                handleMove(-1, 0);
+                break ;
+            case "east":
+                handleMove(1, 0);
+                break ;
+            default:
+                System.out.println("Unknown instruction.");
+        }
     }
 
     private String  readInput(List<String> validArgs) {
@@ -48,73 +95,5 @@ public class TerminalController extends Controller {
         }
 
         return (input);
-    }
-
-    public void    processInput() {
-        System.out.println("What do you want to do now?");
-        List<String> valid = List.of("north", "south", "west", "east", "quit");
-        String input = readInput(valid);
-
-        switch (input)
-        {
-            case "north":
-                model.move(0, -1);
-                break ;
-            case "south":
-                model.move(0, 1);
-                break ;
-            case "west":
-                model.move(-1, 0);
-                break ;
-            case "east":
-                model.move(1, 0);
-                break ;
-            default:
-                System.out.println("Unknown instruction.");
-        }
-    }
-
-    public void processCreateCharacter()
-    {
-        GameState   state = model.getGameState();
-
-        System.out.println("Let's create a new character!");
-
-        System.out.println("Enter your character's name:");
-        List<String> valid = List.of("any_name", "quit");
-        state.setPlayerName(readInputNoUnknown(valid));
-
-        System.out.println("Enter your character's class:");
-        valid = List.of("any_class", "quit");
-        System.out.println(readInputNoUnknown(valid));
-    }
-
-    public void processLoadSaveFile()
-    {
-        System.out.println("Choose a file to open.");
-        List<String> valid = List.of("file_name", "quit");
-        String saveFile = readInputNoUnknown(valid);
-
-        System.out.println("Loading file " + saveFile);
-    }
-
-    public void processStartGame() {
-        System.out.println("Create/Load a character.");
-        List<String> valid = List.of("load", "create", "quit");
-        String input = readInput(valid);
-
-        switch (input)
-        {
-            case "load":
-                processLoadSaveFile();
-                break ;
-            case "create":
-                processCreateCharacter();
-                break ;
-            default:
-                System.out.println("Unknown instruction.");
-        }
-        System.out.println("Starting a new game!");
-        model.startGame();
     }
 }

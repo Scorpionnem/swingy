@@ -1,4 +1,6 @@
-package org.mbatty.model;
+package org.mbatty.model.entities;
+
+import org.mbatty.model.Artifact;
 
 public class Goblin extends Entity {
     public Goblin(String name) {

@@ -1,4 +1,6 @@
-package org.mbatty.model;
+package org.mbatty.model.entities;
+
+import org.mbatty.model.Artifact;
 
 public class Entity {
     private String	_name;
@@ -14,7 +16,7 @@ public class Entity {
     private int		_defense = 0;
     private int		_health = 1;
 
-    protected Artifact				_weapon;
+    protected Artifact              _weapon;
     protected Artifact				_armor;
     protected Artifact				_helm;
 
@@ -29,7 +31,8 @@ public class Entity {
     }
 
     public void	attack(Entity target) {
-        System.out.println(_name + " attacks " + target.getName());
+        if (!alive())
+            return ;
         target.takeDamage(getAttack());
     }
 
@@ -54,12 +57,7 @@ public class Entity {
             }
         }
 
-        System.out.println(_name + " took " + val + " damage");
-
         _health -= val;
-        if (_health <= 0) {
-            System.out.println(_name + " died!");
-        }
     }
 
     public void	addExperience(int val) {
@@ -108,8 +106,14 @@ public class Entity {
             return (_health + _helm.getBoost());
         return (_health);
     }
+    public Boolean  alive() {
+        return (getHealth() > 0);
+    }
     public String	getName() {
         return (_name);
+    }
+    public void setName(String name) {
+        this._name = name;
     }
     public String	getClassType() {
         return (_classType);
@@ -127,9 +131,5 @@ public class Entity {
     }
     public void setPosY(int posY) {
         this.posY = posY;
-    }
-
-    public void setName(String name) {
-        this._name = name;
     }
 }
