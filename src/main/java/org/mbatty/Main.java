@@ -4,6 +4,7 @@ import org.mbatty.controller.Controller;
 import org.mbatty.controller.GUIController;
 import org.mbatty.controller.TerminalController;
 import org.mbatty.model.Model;
+import org.mbatty.model.entities.EntityException;
 import org.mbatty.view.GUIView;
 import org.mbatty.view.TerminalView;
 import org.mbatty.view.View;
@@ -39,28 +40,28 @@ public class Main {
 
         try {
             controller.startGame();
-        } catch (FileNotFoundException e) {
+            controller.render();
+
+            while (true) {
+                controller.processInput();
+
+                if (controller.getSwitchView()) {
+                    if (currentView.equals("gui")) {
+                        controller.closeGUI();
+                        currentView = "console";
+                        controller = new TerminalController(model, new TerminalView());
+                    }
+                    else if (currentView.equals("console")) {
+                        currentView = "gui";
+                        controller = new GUIController(model, new GUIView());
+                    }
+                }
+
+                controller.render();
+            }
+        } catch (FileNotFoundException | EntityException e) {
             System.out.println(e.toString());
             exit(1);
-        }
-        controller.render();
-
-        while (true) {
-            controller.processInput();
-
-            if (controller.getSwitchView()) {
-                if (currentView.equals("gui")) {
-                    controller.closeGUI();
-                    currentView = "console";
-                    controller = new TerminalController(model, new TerminalView());
-                }
-                else if (currentView.equals("console")) {
-                    currentView = "gui";
-                    controller = new GUIController(model, new GUIView());
-                }
-            }
-
-            controller.render();
         }
     }
 }

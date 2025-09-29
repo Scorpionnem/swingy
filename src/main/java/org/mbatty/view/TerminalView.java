@@ -12,7 +12,7 @@ public class TerminalView extends View {
                 if (entity != null && entity.getName().equals("enemy"))
                     System.out.print("\uD83E\uDDCC");
                 else if (entity != null)
-                    System.out.print("\uD83E\uDD34\uD83C\uDFFB");
+                    System.out.print("\uD83E\uDD34");
                 else
                     System.out.print("  ");
             }

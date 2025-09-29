@@ -1,29 +1,42 @@
 package org.mbatty.model.entities;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import org.mbatty.model.Artifact;
 
 import java.io.*;
 import java.util.Scanner;
+import java.util.Set;
+
+import jakarta.validation.constraints.Min;
+import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
 
 public class Entity {
     private String	_name;
     private String	_classType;
 
+    @Min(value = 1, message = "Level has to be at least 1")
     private int		_level = 1;
+    @Min(value = 0)
     private int		_experience = 0;
 
     private int     posY = 0;
     private int     posX = 0;
 
+    @Min(value = 1)
     private int		_attack = 1;
+    @Min(value = 0)
     private int		_defense = 0;
+    @Min(value = 1)
     private int		_health = 1;
 
     protected Artifact              _weapon;
     protected Artifact				_armor;
     protected Artifact				_helm;
 
-    public Entity(String name, String classType, int level, int experience, int attack, int defense, int health) {
+    public Entity(String name, String classType, int level, int experience, int attack, int defense, int health) throws EntityException {
         _name = name;
         _classType = classType;
         _level = level;
@@ -31,16 +44,21 @@ public class Entity {
         _attack = attack;
         _defense = defense;
         _health = health;
-    }
 
-//    name sigma
-//    class Knight
-//      level 1
-//    experience 0
-//    attack 1
-//    defense 1
-//    health 10
-//    weapon Basic Sword WEAPON 2
+        ValidatorFactory factory = Validation.byDefaultProvider()
+                .configure()
+                .messageInterpolator(new ParameterMessageInterpolator())
+                .buildValidatorFactory();
+        Validator validator = factory.getValidator();
+
+        Set<ConstraintViolation<Entity>> violations = validator.validate(this);
+        if (!violations.isEmpty()) {
+            for (ConstraintViolation<Entity> violation : violations) {
+                System.out.println(violation.getMessage());
+            }
+            throw new EntityException("Invalid entity created!");
+        }
+    }
 
     private void parseLine(String line) {
         if (line.isEmpty())
@@ -148,6 +166,9 @@ public class Entity {
         while (_experience >= xpToLevelUp()) {
             _experience -= xpToLevelUp();
             _level++;
+            _health += _level * 2;
+            _attack += _level;
+            _defense += _level / 2;
             System.out.println(_name + " leveled up!");
         }
     }

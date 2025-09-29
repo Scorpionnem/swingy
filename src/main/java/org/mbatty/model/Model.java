@@ -7,6 +7,7 @@ package org.mbatty.model;
 */
 
 import org.mbatty.model.entities.Entity;
+import org.mbatty.model.entities.EntityException;
 import org.mbatty.model.entities.Goblin;
 
 import static java.lang.System.exit;
@@ -14,19 +15,19 @@ import static java.lang.System.exit;
 public class Model {
     private final GameState   gameState = new GameState();
 
-    private void    spreadEntities() {
+    private void    spreadEntities(int level) throws EntityException {
         Map map = gameState.getMap();
         int size = map.getSize();
 
         for (int y = 0; y < size; y++) {
             for (int x = 0; x < size; x++) {
                 if (Math.random() > 0.5 && !(x == size / 2 && y == size / 2))
-                    map.setEntity(new Goblin("enemy"), x, y);
+                    map.setEntity(new Goblin("enemy", level), x, y);
             }
         }
     }
 
-    public void    startNewLevel() {
+    public void    startNewLevel() throws EntityException {
         Entity  player = gameState.getPlayer();
 
         int level = player.getLevel();
@@ -38,7 +39,7 @@ public class Model {
         gameState.setMap(new Map(mapSize));
 
         gameState.getMap().setEntity(player, player.getPosX(), player.getPosY());
-        spreadEntities();
+        spreadEntities(level);
     }
 
     public void startFight(Entity e1, Entity e2) {

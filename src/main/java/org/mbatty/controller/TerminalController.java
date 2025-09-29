@@ -1,14 +1,11 @@
 package org.mbatty.controller;
 
-import org.mbatty.model.GameState;
 import org.mbatty.model.Model;
-import org.mbatty.model.entities.Knight;
-import org.mbatty.view.TerminalView;
+import org.mbatty.model.entities.EntityException;
+import org.mbatty.model.entities.Player;
 import org.mbatty.view.View;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -38,7 +35,7 @@ public class TerminalController extends Controller {
         return (false);
     }
 
-    public void processStartInput() {
+    public void processStartInput() throws EntityException {
         view.renderInfo("Lets start, what do you want to do?");
         List<String> valid = List.of("create", "load", "quit");
         String input = readInput(valid);
@@ -55,14 +52,16 @@ public class TerminalController extends Controller {
         }
     }
 
-    private void    createCharacter() {
+    private void    createCharacter() throws EntityException {
         List<String> valid = List.of("any_name", "quit");
         String name = readInputNoUnknown(valid);
+        valid = List.of("any_class", "quit");
+        String classType = readInputNoUnknown(valid);
 
-        model.getGameState().setPlayer(new Knight(name));
+        model.getGameState().setPlayer(new Player(name, classType));
     }
 
-    public void    processInput() {
+    public void    processInput() throws EntityException {
         view.renderInfo("What do you want to do now?");
         List<String> valid = List.of("north", "south", "west", "east", "switchview", "save", "quit");
         String input = readInput(valid);

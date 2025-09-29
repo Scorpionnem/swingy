@@ -9,7 +9,7 @@ package org.mbatty.controller;
 import org.mbatty.model.Map;
 import org.mbatty.model.Model;
 import org.mbatty.model.entities.Entity;
-import org.mbatty.model.entities.Knight;
+import org.mbatty.model.entities.EntityException;
 import org.mbatty.view.View;
 
 import java.io.FileNotFoundException;
@@ -21,8 +21,8 @@ abstract public class Controller {
     protected View view;
     protected Boolean   switchView = false;
 
-    abstract public void processInput();
-    abstract public void processStartInput() throws FileNotFoundException;
+    abstract public void processInput() throws EntityException;
+    abstract public void processStartInput() throws FileNotFoundException, EntityException;
     abstract public boolean processFightInput();
 
     public Boolean  getSwitchView() {
@@ -33,7 +33,7 @@ abstract public class Controller {
         view.closeWindow();
     }
 
-    public void startGame() throws FileNotFoundException {
+    public void startGame() throws FileNotFoundException, EntityException {
         processStartInput();
         model.startNewLevel();
     }
@@ -43,7 +43,7 @@ abstract public class Controller {
         view.renderPlayerStats(model.getGameState().getPlayer());
     }
 
-    protected void handleMove(int dx, int dy) {
+    protected void handleMove(int dx, int dy) throws EntityException {
         Entity player = model.getGameState().getPlayer();
         Map map = model.getGameState().getMap();
 

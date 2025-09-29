@@ -2,17 +2,16 @@ package org.mbatty.controller;
 
 import org.mbatty.model.Model;
 import org.mbatty.model.entities.Entity;
-import org.mbatty.model.entities.Knight;
+import org.mbatty.model.entities.EntityException;
+import org.mbatty.model.entities.Player;
 import org.mbatty.view.View;
 
 import javax.swing.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
-import java.util.Scanner;
 
 import static java.lang.System.exit;
-import static java.lang.System.load;
 
 public class GUIController extends Controller {
     public GUIController(Model model, View view) {
@@ -36,7 +35,7 @@ public class GUIController extends Controller {
         return (false);
     }
 
-    public void processStartInput() throws FileNotFoundException {
+    public void processStartInput() throws FileNotFoundException, EntityException {
         List<String> valid = List.of("create", "load", "quit");
         String input = readInput(valid);
 
@@ -64,15 +63,16 @@ public class GUIController extends Controller {
         model.getGameState().setPlayer(new Entity(file));
     }
 
-    private void    createCharacter() {
+    private void    createCharacter() throws EntityException {
         String name = JOptionPane.showInputDialog(null, "Enter your name:");
+        String classType = JOptionPane.showInputDialog(null, "Enter your classType:");
 
-        if (name == null)
+        if (name == null || classType == null)
             exit(1);
-        model.getGameState().setPlayer(new Knight(name));
+        model.getGameState().setPlayer(new Player(name, classType));
     }
 
-    public void    processInput() {
+    public void    processInput() throws EntityException {
         List<String> valid = List.of("north", "south", "west", "east", "switchview", "save", "quit");
         String input = readInput(valid);
 
