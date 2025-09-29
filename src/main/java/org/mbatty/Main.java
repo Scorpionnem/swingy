@@ -1,42 +1,66 @@
 package org.mbatty;
 
 import org.mbatty.controller.Controller;
+import org.mbatty.controller.GUIController;
 import org.mbatty.controller.TerminalController;
 import org.mbatty.model.Model;
+import org.mbatty.view.GUIView;
 import org.mbatty.view.TerminalView;
 import org.mbatty.view.View;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.FileNotFoundException;
+
+import static java.lang.System.exit;
 
 public class Main {
     public static void main(String[] args) {
 
-        Model   model = new Model();
-        View view = new TerminalView();
-        Controller controller = new TerminalController(model, view);
+        if (args.length != 1) {
+            System.out.println("Invalid arguments");
+            return ;
+        }
 
-        controller.startGame();
+        Model   model = new Model();
+        Controller controller;
+
+        if (args[0].equals("gui")) {
+            controller = new GUIController(model, new GUIView());
+        }
+        else if (args[0].equals("console")) {
+            controller = new TerminalController(model, new TerminalView());
+        } else {
+            System.out.println("Invalid arguments");
+            return ;
+        }
+
+        String  currentView = args[0];
+
+        try {
+            controller.startGame();
+        } catch (FileNotFoundException e) {
+            System.out.println(e.toString());
+            exit(1);
+        }
+        controller.render();
 
         while (true) {
             controller.processInput();
 
-            view.renderMap(model.getGameState().getMap());
-            view.renderPlayerStats(model.getGameState().getPlayer());
+            if (controller.getSwitchView()) {
+                if (currentView.equals("gui")) {
+                    controller.closeGUI();
+                    currentView = "console";
+                    controller = new TerminalController(model, new TerminalView());
+                }
+                else if (currentView.equals("console")) {
+                    currentView = "gui";
+                    controller = new GUIController(model, new GUIView());
+                }
+            }
+
+            controller.render();
         }
     }
 }
-
-/*
-    Start: the player chooses to load/create a player, either case we prompt them to give us the right values
-
-    We then start a game and render it.
-
-    Each turn we ask for input, model gets modified accordingly.
-
-    If death, leave.
-
-    If win, go to next level,
-
-    if on enemy, simulate fight (50/50 to who starts the fight then just attack, attack...)
-*/

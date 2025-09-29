@@ -2,6 +2,9 @@ package org.mbatty.model.entities;
 
 import org.mbatty.model.Artifact;
 
+import java.io.*;
+import java.util.Scanner;
+
 public class Entity {
     private String	_name;
     private String	_classType;
@@ -28,6 +31,85 @@ public class Entity {
         _attack = attack;
         _defense = defense;
         _health = health;
+    }
+
+//    name sigma
+//    class Knight
+//      level 1
+//    experience 0
+//    attack 1
+//    defense 1
+//    health 10
+//    weapon Basic Sword WEAPON 2
+
+    private void parseLine(String line) {
+        if (line.isEmpty())
+            return ;
+
+        String[] args = line.split(" ");
+        if (args.length < 1)
+            return ;
+
+        if (args[0].equals("name")) {
+            this._name = args[1];
+        }
+        else if (args[0].equals("class")) {
+            this._classType = args[1];
+        }
+        else if (args[0].equals("level")) {
+            this._level = Integer.parseInt(args[1]);
+        }
+        else if (args[0].equals("experience")) {
+            this._experience = Integer.parseInt(args[1]);
+        }
+        else if (args[0].equals("attack")) {
+            this._attack = Integer.parseInt(args[1]);
+        }
+        else if (args[0].equals("defense")) {
+            this._level = Integer.parseInt(args[1]);
+        }
+        else if (args[0].equals("health")) {
+            this._health = Integer.parseInt(args[1]);
+        }
+        else if (args[0].equals("weapon") || args[0].equals("armor") || args[0].equals("helm")) {
+            System.out.println(args[2].toUpperCase());
+            this._weapon = new Artifact(args[1], Artifact.Type.valueOf(args[2].toUpperCase()), Integer.parseInt(args[3]));
+        }
+    }
+
+    public Entity(String file) throws FileNotFoundException {
+        Scanner fileReader = new Scanner(new File(file));
+
+        while (fileReader.hasNextLine()) {
+            String data = fileReader.nextLine();
+            parseLine(data);
+        }
+    }
+
+    public void exportFile() throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter(this._name + ".txt"));
+        writer.write("name " + this._name + "\n");
+        writer.write("class " + this._classType + "\n");
+        writer.write("level " + this._level + "\n");
+        writer.write("experience " + this._experience + "\n");
+        writer.write("attack " + this._attack + "\n");
+        writer.write("defense " + this._defense + "\n");
+        writer.write("health " + this._health + "\n");
+
+        if (_weapon != null) {
+            writer.write("weapon ");
+            _weapon.exportFile(writer);
+        }
+        if (_armor != null) {
+            writer.write("armor ");
+            _armor.exportFile(writer);
+        }
+        if (_helm != null) {
+            writer.write("helm ");
+            _helm.exportFile(writer);
+        }
+
+        writer.close();
     }
 
     public void	attack(Entity target) {

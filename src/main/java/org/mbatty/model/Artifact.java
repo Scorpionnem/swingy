@@ -1,5 +1,8 @@
 package org.mbatty.model;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+
 public class Artifact {
     String	_name;
     Type	_type;
@@ -15,6 +18,10 @@ public class Artifact {
         _name = name;
         _type = type;
         _boost = boost;
+    }
+
+    public void exportFile(BufferedWriter writer) throws IOException {
+        writer.write(_name + " " + _type + " " + _boost);
     }
 
     public int	getBoost() {

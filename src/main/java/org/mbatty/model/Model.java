@@ -20,7 +20,7 @@ public class Model {
 
         for (int y = 0; y < size; y++) {
             for (int x = 0; x < size; x++) {
-                if (Math.random() > 0.5 && x != size / 2 && y != size / 2)
+                if (Math.random() > 0.5 && !(x == size / 2 && y == size / 2))
                     map.setEntity(new Goblin("enemy"), x, y);
             }
         }

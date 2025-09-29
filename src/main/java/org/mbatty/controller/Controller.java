@@ -12,17 +12,35 @@ import org.mbatty.model.entities.Entity;
 import org.mbatty.model.entities.Knight;
 import org.mbatty.view.View;
 
+import java.io.FileNotFoundException;
+
+import static java.lang.System.exit;
+
 abstract public class Controller {
     protected Model model;
     protected View view;
+    protected Boolean   switchView = false;
 
     abstract public void processInput();
-    abstract public void processStartInput();
+    abstract public void processStartInput() throws FileNotFoundException;
     abstract public boolean processFightInput();
 
-    public void startGame() {
+    public Boolean  getSwitchView() {
+        return (this.switchView);
+    }
+
+    public void closeGUI() {
+        view.closeWindow();
+    }
+
+    public void startGame() throws FileNotFoundException {
         processStartInput();
         model.startNewLevel();
+    }
+
+    public void render() {
+        view.renderMap(model.getGameState().getMap());
+        view.renderPlayerStats(model.getGameState().getPlayer());
     }
 
     protected void handleMove(int dx, int dy) {
@@ -40,11 +58,13 @@ abstract public class Controller {
         }
         if (player.alive())
             model.moveTo(player, dx, dy);
-        else
-            System.out.println("OH NO I DIED!");
+        else {
+            view.renderInfo("You died!");
+            exit(1);
+        }
 
         if (map.onEdge(player.getPosX(), player.getPosY())) {
-            System.out.println("YOU WIN");
+            view.renderInfo("You won this map!");
             model.startNewLevel();
         }
     }
